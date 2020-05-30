@@ -1,1 +1,0 @@
-/usr/bin/c++  -fpermissive -g   CMakeFiles/bayesian_network.dir/main.cpp.o CMakeFiles/bayesian_network.dir/not_pandas.cpp.o CMakeFiles/bayesian_network.dir/variable.cpp.o CMakeFiles/bayesian_network.dir/bayesian_net.cpp.o  -o bayesian_network 
