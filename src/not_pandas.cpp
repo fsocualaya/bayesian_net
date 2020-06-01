@@ -2,24 +2,8 @@
 // Created by notpyxl on 16/05/20.
 //
 
-
 #include "not_pandas.h"
-
-std::vector<std::string> tmp_insert(std::vector<std::string> c, std::string value){
-    c.push_back(value);
-    return c;
-}
-
-std::vector<std::vector<std::string>> row_product(const std::vector<std::string>& r1,const std::vector<std::vector<std::string>>& comb){
-    std::vector<std::vector<std::string>> perm;
-    for(auto&i:comb){
-        for(auto&j:r1){
-            auto tmp = tmp_insert(i, j);
-            perm.push_back(tmp);
-        }
-    }
-    return perm;
-}
+#include "aux_functions.h"
 
 void not_pandas::read_csv(const std::string&filename) {
     std::fstream file(filename, std::ios::in);
@@ -129,7 +113,7 @@ not_pandas::not_pandas(std::string& filename) {
     cols = headers.size();
 }
 
-std::map<std::vector<std::string>, float> not_pandas::joint_prob(const std::vector<int>& vars, int hyper_alpha) {
+std::map<std::vector<std::string>, float> not_pandas::joint_prob(const std::vector<int>& vars, int hyper_alpha, bool normalize) {
 
     std::vector<std::vector<std::string>> classes;
 
@@ -173,24 +157,35 @@ std::map<std::vector<std::string>, float> not_pandas::joint_prob(const std::vect
         count[tmp]++;
     }
 
-    // Do the math: normalize all the frequencies in the count map
+    // Do the math: If normalize all the frequencies in the count map
+    //              Else, return only the count
 
-    for(auto&i:count){
-        i.second = (i.second + hyper_alpha) / (float)(rows + den * hyper_alpha);
+    if(normalize){
+        for(auto&i:count){
+            i.second = (i.second + hyper_alpha) / (float)(rows + den * hyper_alpha);
+        }
     }
 
     return count;
-
 }
 
 std::map<std::vector<std::string>, float>
-not_pandas::cond_prob(const int &j, const std::vector<int> &conditionals, int hyper_alpha, bool normalize) {
+not_pandas::cond_prob(const int &j, const std::vector<int> &given, const int& hyper_alpha, const bool& normalize) {
 
-    auto tmp = conditionals;
+    if((given.size() == 1 && given[0] == j) || given.size() == 0){
+        auto cond = value_counts(j, hyper_alpha);
+        std::map<std::vector<std::string>, float> res;
+        for(auto&i:cond.counting)
+            res[{i.first}] = i.second;
+
+        return res;
+    }
+
+    auto tmp = given;
     tmp.push_back(j);
 
-    auto den = joint_prob(conditionals, hyper_alpha);
-    auto num = joint_prob(tmp, hyper_alpha);
+    auto den = joint_prob(given, hyper_alpha, true);
+    auto num = joint_prob(tmp, hyper_alpha, true);
 
     std::map<std::vector<std::string>, float> sums;
 
@@ -214,8 +209,22 @@ not_pandas::cond_prob(const int &j, const std::vector<int> &conditionals, int hy
     return num;
 }
 
+std::vector<std::string> not_pandas::tmp_insert(std::vector<std::string> c, std::string value) {
+    c.push_back(value);
+    return c;
+}
 
-
+std::vector<std::vector<std::string>>
+not_pandas::row_product(const std::vector<std::string> &r1, const std::vector<std::vector<std::string>> &comb) {
+    std::vector<std::vector<std::string>> perm;
+    for(auto&i:comb){
+        for(auto&j:r1){
+            auto tmp = tmp_insert(i, j);
+            perm.push_back(tmp);
+        }
+    }
+    return perm;
+}
 
 /*
 void not_pandas::count() {

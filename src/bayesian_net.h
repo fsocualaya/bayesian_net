@@ -12,11 +12,17 @@ typedef std::vector<std::vector<bool>> graph;
 class bayesian_net {
     graph states;
 public:
+    int v;
+    int dim;
     not_pandas not_pd;
     bayesian_net();
-    void add_edge();
+    bayesian_net(std::string filename);
+    void add_edge(int src, int dest);
 
-
+    void print_net();
+    std::vector<int> get_parents(int);
+    float bic();
+    std::string inference(const int &target,const std::vector<std::string> &parameters);
 };
 
 

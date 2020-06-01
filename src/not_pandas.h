@@ -37,9 +37,12 @@ public:
 
     variable value_counts(const int &j, const int&);
 
-    std::map<std::vector<std::string>, float> joint_prob(const std::vector<int>& vars, int hyper_alpha);
-    std::map<std::vector<std::string>, float> cond_prob(const int&j, const std::vector<int>& conditionals,
-        int hyper_alpha, bool normalize);
+    std::map<std::vector<std::string>, float> joint_prob(const std::vector<int>& vars, int hyper_alpha, bool);
+    std::map<std::vector<std::string>, float> cond_prob(const int&j, const std::vector<int>& given,
+        const int& hyper_alpha,const bool& normalize);
+
+    std::vector<std::string> tmp_insert(std::vector<std::string> c, std::string value);
+    std::vector<std::vector<std::string>> row_product(const std::vector<std::string>& r1,const std::vector<std::vector<std::string>>& comb);
 };
 
 #endif //BAYESIAN_NETWORK_NOT_PANDAS_H

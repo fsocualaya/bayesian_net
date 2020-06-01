@@ -1,0 +1,10 @@
+//
+// Created by notpyxl on 1/06/20.
+//
+
+#ifndef BAYESIAN_NETWORK_AUX_FUNCTIONS_H
+#define BAYESIAN_NETWORK_AUX_FUNCTIONS_H
+
+
+
+#endif //BAYESIAN_NETWORK_AUX_FUNCTIONS_H
